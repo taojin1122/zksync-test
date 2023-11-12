@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.8;
-
-// pragma solidity =0.5.16;
+// pragma solidity ^0.8.8;
+// uniswap 0.5.16 版本的智能合约
+pragma solidity =0.5.16;
 
 interface IUniswapV2Factory {
     event PairCreated(address indexed token0, address indexed token1, address pair, uint);
@@ -124,6 +124,7 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
 
     bytes32 public DOMAIN_SEPARATOR;
     // keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+    // 消息的哈希值，用户签名验证
     bytes32 public constant PERMIT_TYPEHASH = 0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
     mapping(address => uint) public nonces;
 
@@ -397,6 +398,9 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
 contract UniswapV2Factory is IUniswapV2Factory {
     address public feeTo;
     address public feeToSetter;
+    // INT_CODE_PATH_HASH 存储了 Uniswap V2 交易对合约的创建代码的哈希值。
+    // 在创建交易对时，合约会使用 create2 函数来部署新的交易对合约，并验证创建代码的哈希值是否与 INT_CODE_PATH_HASH 一致。
+    // 这样可以确保只有正确的合约可以创建交易对，增加了安全性。
     bytes32 public constant INT_CODE_PATH_HASH = keccak256(abi.encodePacked(type(UniswapV2Pair).creationCode));
 
     mapping(address => mapping(address => address)) public getPair;
